@@ -1,52 +1,52 @@
 # Ranked-Positional-Weights_Moodie-Young-Method
 
-本项目旨在针对特定型号的装配线，通过最小化工位数量来优化装配线平衡，同时满足给定的节拍时间限制。项目实现了分级位置权值法(Ranked Positional Weights, RPW)和莫迪和杨法(Moodie Young Method, MYM)两种方法来实现这一目标。
+This project aims to optimize assembly line balancing for specific models by minimizing the number of workstations while adhering to given cycle time constraints. The project implements two methods to achieve this goal: Ranked Positional Weights (RPW) and the Moodie Young Method (MYM).
 
-## 项目结构
+## Project Structure
 
-项目包含以下组件：
+The project includes the following components:
 
-- **代码**: 包括Python脚本来实现两种方法：
-  - `01RPW.py`: 实现了分级位置权值法。
-  - `02MYM_classic.py`: 实现了莫迪和杨法。
-  - `04MYM_*.py`: 实现了经过修改的莫迪和杨法，完成拓展性的探索。
+- **Code**: Python scripts implementing two methods:
+  - `01RPW.py`: Implements the Ranked Positional Weights method.
+  - `02MYM_classic.py`: Implements the classic Moodie Young Method.
+  - `04MYM_*.py`: Implements modified versions of the Moodie Young Method for exploratory purposes.
 
-## 实现的方法
+## Implemented Methods
 
-### RPW分级位置权值法
+### RPW - Ranked Positional Weights Method
 
-RPW分级位置权值法是一种启发式方法，根据装配线序列中任务的加权位置值将任务分配到工位上。该算法旨在在满足节拍时间限制的同时，最小化所需的工位数量。
+RPW is a heuristic method that assigns tasks to workstations based on weighted positional values within the assembly line sequence. The algorithm aims to minimize the required number of workstations while meeting cycle time constraints.
 
-### MYM莫迪和杨法
+### MYM - Moodie Young Method
 
-MYM莫迪和杨法包括两个主要阶段：
+MYM consists of two main stages:
 
-1. **作业元素分配阶段**(Work Elements Assignment): 根据特定的任务排序规则将任务分配到工位上，探索不同排序规则对工位数量的影响。
-2. **交换和转移阶段**(Trade and Transfer): 通过评估在交换和转移阶段选择工位的不同规则，进一步优化工位分配，以实现装配线的平衡。
+1. **Work Elements Assignment Stage**: Tasks are assigned to workstations based on specific task sequencing rules to explore their impact on workstation count.
+2. **Trade and Transfer Stage**: By evaluating different rules for selecting workstations during trades and transfers, further optimization of workstation allocation is achieved to balance the assembly line.
 
-## 实验探索
+## Experimental Exploration
 
-### 任务排序规则对作业元素分配阶段的影响
+### Impact of Task Sequencing Rules on Work Elements Assignment Stage
 
-不同的任务排序规则显著影响作业元素分配阶段所需的工位数量。本项目探索了各种任务排序策略，以确定哪种能够有效地最小化工位数量。
+Different task sequencing rules significantly affect the number of workstations required in the work elements assignment stage. This project explores various task sequencing strategies to determine which effectively minimizes the number of workstations.
 
-### 工位选择规则对交换和转移阶段的影响
+### Impact of Workstation Selection Rules on Trade and Transfer Stage
 
-在交换和转移阶段，选择工位的规则会影响装配线的平衡指数。本项目研究了这些规则，以确定它们对实现最优工位分配的影响。
+During the trade and transfer stage, rules for selecting workstations influence the balance index of the assembly line. This project studies these rules to ascertain their impact on achieving optimal workstation allocation.
 
-## 使用方法
+## Usage
 
-1. **数据准备**: 确保包含任务详细信息的CSV文件格式正确，名称为tasks.csv。
-  >ID,Name,Time,Predecessors
->
-  >...
->
-  >26,固定右侧保险杠,5,25
->
-  >27,准备配对,5,24;26
->
-  >28,将横梁与发动机连接,40,11;13;27
-2. **执行**:
-   - 运行 `01RPW.py` 来应用分级位置权值法。
-   - 运行 `02MYM_classic.py` 来应用莫迪和杨法。
+1. **Data Preparation**: Ensure the CSV file containing detailed task information is correctly formatted and named `tasks.csv`.
+   >ID,Name,Time,Predecessors
+   >
+   >...
+   >
+   >26,Install Right Bumper,5,25
+   >
+   >27,Prepare for Pairing,5,24;26
+   >
+   >28,Connect Crossbeam with Engine,40,11;13;27
 
+2. **Execution**:
+   - Run `01RPW.py` to apply the Ranked Positional Weights method.
+   - Run `02MYM_classic.py` to apply the classic Moodie Young Method.
