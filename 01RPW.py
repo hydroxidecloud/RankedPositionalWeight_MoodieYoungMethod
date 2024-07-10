@@ -1,4 +1,4 @@
-# 分级位置权值法
+# Ranked Positional Weights Method
 import csv
 import numpy as np
 
@@ -15,7 +15,7 @@ class Task:
 
 
 def read_tasks_from_csv(csv_file):
-    # 读取csv，设定每个task的基本属性id, name, time, predecessors，得到列表tasks
+    # read csv，set id, name, time, predecessors of every single task, generate tasks
     tasks = []
     with open(csv_file, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -31,7 +31,7 @@ def read_tasks_from_csv(csv_file):
 
 
 def find_successors(non_successors_tasks):
-    # 找到紧接的后置任务，设定tasks中每个task的紧接后置任务
+    # find following successors，set the succesors of every task in tasks
     tasks = non_successors_tasks
     for object_task in tasks:
         temp_successors = []
@@ -43,9 +43,9 @@ def find_successors(non_successors_tasks):
 
 
 def find_chain_successors(with_successors_tasks):
-    # 找到后续链上的所有后置任务，设定tasks中每个task的链后置任务（包括自身）
+    # find all the successors on the chain，set chain successors of every task in tasks（inclunding self）
     def find_object_chain_successors(with_successors_tasks, id):
-        # 找到一个指定任务的链后置任务，设定该task的链后置任务（包括自身）
+        # find the chain sussessors of a specific task, set chain successors of this task（including self）
         object_task = next((obj for obj in with_successors_tasks if obj.id == id), None)
         if object_task:
             def dfs(node, chain_successors):
@@ -62,9 +62,9 @@ def find_chain_successors(with_successors_tasks):
 
 
 def write_rpw(with_chain_successors_tasks):
-    # 计算tasks中每个task的rpw，设定tasks中每个task的rpw
+    # calculate and set rpw of every task in tasks
     def calculate_object_rpw(with_chain_successors_tasks, id):
-        # 计算一个指定任务的rpw，并返回值
+        # calculate the rpw of a specific task and return it
         object_task = next((obj for obj in with_chain_successors_tasks if obj.id == id), None)
         object_rpw = 0
         for observed_id in object_task.chain_successors:
@@ -77,7 +77,7 @@ def write_rpw(with_chain_successors_tasks):
 
 
 def calculate_station_time(stations, j):
-    # 计算工位j的时间
+    # calculate station j's time
     station_time = 0
     for task in stations[j - 1]:
         station_time = station_time + task.time
@@ -111,11 +111,11 @@ def print_final_result(stations):
     stations_time = []
     for station_number in range(1, len(stations) + 1):
         stations_time.append(calculate_station_time(stations, station_number))
-    print("编程实现分级位置权值法，解决装配线平衡问题，得到以下结果")
-    print("工位的数量是", len(stations))
+    print("Programming to implement the hierarchical position weight method, solve the assembly line balance problem, and get the following results.")
+    print("The Number of stations is", len(stations))
     for index, station in enumerate(stations):
-        print("工位", index + 1, "上进行的任务有", [(task.id, task.name) for task in station])
-    print("每个工位的时间分别是", stations_time)
+        print("Station", index + 1, "operates task", [(task.id, task.name) for task in station])
+    print("The time of the stations are", stations_time)
     print()
 
 
@@ -161,5 +161,5 @@ if __name__ == "__main__":
     #     stations_time.append(calculate_station_time(stations, station_number))
     # print(stations_time)
 
-    print("平衡率eta =", calculate_balance_rate(stations))
-    print("平滑指数SI =", calculate_smoothing_index(stations))
+    print("Balance Rate eta =", calculate_balance_rate(stations))
+    print("Smoothing Index SI =", calculate_smoothing_index(stations))
