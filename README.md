@@ -1,4 +1,4 @@
-# RPW_Moodie-Young-Method
+# Ranked-Positional-Weights_Moodie-Young-Method
 
 本项目旨在针对特定型号的装配线，通过最小化工位数量来优化装配线平衡，同时满足给定的节拍时间限制。项目实现了分级位置权值法(Ranked Positional Weights, RPW)和莫迪和杨法(Moodie Young Method, MYM)两种方法来实现这一目标。
 
