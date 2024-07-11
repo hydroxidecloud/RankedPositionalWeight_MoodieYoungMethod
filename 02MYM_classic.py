@@ -1,4 +1,4 @@
-# 莫迪和杨法 原版（元素分配阶段优先选择任务时间最大）
+# Moodie Young Method Classic Ver.(Maximum task time is prioritized in the element allocation phase)
 import csv
 
 import numpy as np
@@ -14,12 +14,11 @@ class Task:
         self.successors = successors
         self.chain_successors = chain_successors
         self.rpw = rpw
-        # temp_predecessors是莫迪和杨法中的变量，初始值与predecessors一致，期间逐渐置为[]。predecessors设定后保持只读
+        # temp_predictors is a variable in MYM, the initial value is consistent with predictors, and the period is gradually set to []. Predecessors remain read-only after they are set
         self.temp_predecessors = temp_predecessors
 
 
 def read_tasks_from_csv(csv_file):
-    # 读取csv，设定每个task的基本属性id, name, time, predecessors，得到列表tasks
     tasks = []
     with open(csv_file, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -35,7 +34,6 @@ def read_tasks_from_csv(csv_file):
 
 
 def find_successors(non_successors_tasks):
-    # 找到紧接的后置任务，设定tasks中每个task的紧接后置任务
     tasks = non_successors_tasks
     for object_task in tasks:
         temp_successors = []
@@ -47,9 +45,7 @@ def find_successors(non_successors_tasks):
 
 
 def find_chain_successors(with_successors_tasks):
-    # 找到后续链上的所有后置任务，设定tasks中每个task的链后置任务（包括自身）
     def find_object_chain_successors(with_successors_tasks, id):
-        # 找到一个指定任务的链后置任务，设定该task的链后置任务（包括自身）
         object_task = next((obj for obj in with_successors_tasks if obj.id == id), None)
         if object_task:
             def dfs(node, chain_successors):
@@ -66,9 +62,7 @@ def find_chain_successors(with_successors_tasks):
 
 
 def write_rpw(with_chain_successors_tasks):
-    # 计算tasks中每个task的rpw，设定tasks中每个task的rpw
     def calculate_object_rpw(with_chain_successors_tasks, id):
-        # 计算一个指定任务的rpw，并返回值
         object_task = next((obj for obj in with_chain_successors_tasks if obj.id == id), None)
         object_rpw = 0
         for observed_id in object_task.chain_successors:
@@ -86,7 +80,6 @@ def duplicate_predecessors(non_temp_predecessors_tasks):
 
 
 def calculate_station_time(stations, j):
-    # 计算工位j的时间
     station_time = 0
     for task in stations[j - 1]:
         station_time = station_time + task.time
@@ -94,8 +87,7 @@ def calculate_station_time(stations, j):
 
 
 def check_task_order_validity(stations, j, object_task):
-    # 对于即将在工位j上分配的任务object_task，判断紧前任务是否在工位j及之前已存在
-    # previous_j_tasks_id是工位j及之前工位上已分配任务id的列表
+    # for the task object_task to be assigned at station j, it is judged whether the immediately preceding task exists at or before station j
     previous_j_tasks_id = []
     for station_number in range(1, j + 1):
         # print(j)
@@ -108,8 +100,8 @@ def check_task_order_validity(stations, j, object_task):
 
 
 def check_task_redeploy_validity(stations, j, object_task):
-    # 对于已经完成分配的stations，任务object_task如果改置于工位j，判断链后置任务是否都在工位j及之后
-    # subsequent_j_tasks_id是工位j及之后工位上已分配任务id的列表
+    # for stations that have been allocated, if the task object_task is changed to station j, determine whether all subsequent tasks of the chain are at station j and after
+    # subsequent_j_tasks_id is a list of assigned task ids on station j and subsequent stations
     subsequent_j_tasks_id = []
     for station_number in range(len(stations), j - 1, -1):
         # print(j)
@@ -126,11 +118,11 @@ def print_final_result(stations):
     stations_time = []
     for station_number in range(1, len(stations) + 1):
         stations_time.append(calculate_station_time(stations, station_number))
-    print("编程实现莫迪和杨法（原版，元素分配阶段优先选择任务时间最大），解决装配线平衡问题，得到以下结果")
-    print("工位的数量是", len(stations))
+    print("Programming to achieve Modi and Yang method (original, element allocation phase priority task time maximum), solve the assembly line balance problem, get the following results")
+    print("The number of stations is", len(stations))
     for index, station in enumerate(stations):
-        print("工位", index + 1, "上进行的任务有", [(task.id, task.name) for task in station])
-    print("每个工位的时间分别是", stations_time)
+        print("Station", index + 1, "operates Task", [(task.id, task.name) for task in station])
+    print("The time of each station is", stations_time)
     print()
 
 
@@ -140,7 +132,7 @@ def find_transfer(stations, time_max, j_max, time_min, j_min, g):
         if (object_task.time < 2 * g
                 and check_task_redeploy_validity(stations, j_min, object_task)):
             expected_g = 0.5 * ((time_max - object_task.time) - (time_min + object_task.time))
-            # 将transfer操作添加至候选集合，元组中“1”指transfer，expected_g指操作后的原j_max和原j_min工位时间之差的1/2
+            # Add the transfer operation to the candidate set."1" in the tuple refers to transfer, and expected_g refers to 1/2 of the difference between the original j_max and the original j_min station time after the operation.
             candidate_set.add((1, expected_g, object_task, j_max, j_min))
             print("FIND: transfer", object_task.id, "from", j_max, "to", j_min)
 
@@ -156,7 +148,7 @@ def find_trade(stations, time_max, j_max, time_min, j_min, g):
                     and check_task_redeploy_validity(stations, j_max, object2_task)):
                 expected_g = ((time_max - object1_task.time + object2_task.time)
                               - (time_min + object1_task.time - object2_task.time))
-                # 将trade操作添加至候选集合，元组中“2”指trade，expected_g指操作后的原j_max和原j_min工位时间之差的1/2
+                # Add the trade operation to the candidate set."2" in the tuple refers to trade, and expected_g refers to 1/2 of the difference between the original j_max and the original j_min station time after the operation.
                 candidate_set.add((2, expected_g, object1_task, j_max, object2_task, j_min))
                 print("FIND: trade", object1_task.id, "in", j_max, "and", object2_task.id, "in", j_min)
 
@@ -213,23 +205,19 @@ if __name__ == "__main__":
 
     stations = [[]]
 
-    # 作业元素分配阶段
     while len(arranged_tasks) < len(tasks):
         j = 1
 
-        # 得到pending_tasks（按任务时间从大到小排序的无前置任务的本轮待分配任务列表）
         non_predecessors_tasks = [task for task in tasks if len(task.temp_predecessors) == 0]
         sorted_non_predecessors_tasks = sorted(non_predecessors_tasks, key=lambda task: task.time, reverse=True)
         pending_tasks = [task for task in sorted_non_predecessors_tasks if task not in arranged_tasks]
         object_task = pending_tasks[0]
 
-        # 分配任务。如果待分配任务未分配，则保持循环
         while True:
             if len(stations[-1]) >= 1:
                 stations.append([])
             if (calculate_station_time(stations, j) + object_task.time <= beat and
                     check_task_order_validity(stations, j, object_task)):
-                # 如果添加了本任务，与原有任务时间之和不超过节拍；对于即将在工位j上分配的任务object_task，判断紧前任务是否在工位j及之前已存在
                 arranged_tasks.append(object_task)
                 # print("obj", object_task.id)
                 stations[j - 1].append(object_task)
@@ -237,7 +225,6 @@ if __name__ == "__main__":
             j = j + 1
             # print("arranged_tasks", len(arranged_tasks))
 
-        # 更新tasks，将已分配作业的id从每个任务的temp_predecessors中移除
         arranged_tasks_id = [task.id for task in arranged_tasks]
         for object_task in tasks:
             object_task.temp_predecessors = [id for id in object_task.temp_predecessors if id not in arranged_tasks_id]
@@ -245,16 +232,14 @@ if __name__ == "__main__":
     # print("arranged_tasks", len(arranged_tasks))
     # print("tasks", len(tasks))
 
-    # 去除可能存在的未安排任务的空工位
     if len(stations[-1]) == 0:
         stations.pop()
 
-    # 输出未进行Trade and transfer的结果
-    # print("未进行Trade and transfer：")
+    # print("Non Trade and transfer：")
     # print_final_result(stations)
     # print()
 
-    # Trade and transfer阶段
+    # Trade and transfer
     while True:
         stations_time = []
         for station_number in range(1, len(stations) + 1):
@@ -268,15 +253,12 @@ if __name__ == "__main__":
         # print(time_max, j_max, time_min, j_min)
         g = 0.5 * (time_max - time_min)
 
-        # 清空候选集合
         candidate_set = set()
 
-        # 找到transfer和trade的可行操作，生成操作元组，并加入候选集合
         find_transfer(stations, time_max, j_max, time_min, j_min, g)
         find_trade(stations, time_max, j_max, time_min, j_min, g)
         # print(candidate_set)
 
-        # 候选集合为空，则退出
         if len(candidate_set) == 0:
             break
 
@@ -294,9 +276,8 @@ if __name__ == "__main__":
         print_final_result(stations)
         candidate_set = set()
 
-    # 输出已进行Trade and transfer的最终结果
-    print("已进行Trade and transfer：")
+    print("Trade and transfer：")
     print_final_result(stations)
 
-    print("平衡率eta =", calculate_balance_rate(stations))
-    print("平滑指数SI =", calculate_smoothing_index(stations))
+    print("Balance Rate eta =", calculate_balance_rate(stations))
+    print("Smoothing Index SI =", calculate_smoothing_index(stations))
