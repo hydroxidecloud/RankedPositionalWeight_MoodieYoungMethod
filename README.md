@@ -1,19 +1,19 @@
-# Ranked-Positional-Weights_Moodie-Young-Method
+# Ranked-Positional-Weight_Moodie-Young-Method
 
-This project aims to optimize assembly line balancing for specific models by minimizing the number of workstations while adhering to given cycle time constraints. The project implements two methods to achieve this goal: Ranked Positional Weights (RPW) and the Moodie Young Method (MYM).
+This project aims to optimize assembly line balancing for specific models by minimizing the number of workstations while adhering to given cycle time constraints. The project implements two methods to achieve this goal: Ranked Positional Weight (RPW) and the Moodie Young Method (MYM).
 
 ## Project Structure
 
 The project includes the following components:
 
 - **Code**: Python scripts implementing two methods:
-  - `01RPW.py`: Implements the Ranked Positional Weights method.
+  - `01RPW.py`: Implements the Ranked Positional Weight method.
   - `02MYM_classic.py`: Implements the classic Moodie Young Method.
   - `04MYM_*.py`: Implements modified versions of the Moodie Young Method for exploratory purposes.
 
 ## Implemented Methods
 
-### RPW - Ranked Positional Weights Method
+### RPW - Ranked Positional Weight Method
 
 RPW is a heuristic method that assigns tasks to workstations based on weighted positional values within the assembly line sequence. The algorithm aims to minimize the required number of workstations while meeting cycle time constraints.
 
